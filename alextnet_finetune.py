@@ -59,7 +59,7 @@ def train_alexnet(epoch, model, learning_rate, source_loader):
     clf_criterion = nn.CrossEntropyLoss()
 
     for i in range(1, num_iter):
-        source_data, source_label = iter_source.next()
+        source_data, source_label = next(iter_source)
         if cuda:
             source_data, source_label = source_data.cuda(), source_label.cuda()
         source_data, source_label = Variable(source_data), Variable(source_label)
@@ -79,13 +79,13 @@ def train_alexnet(epoch, model, learning_rate, source_loader):
         if i % log_interval == 0:
             print('Train Epoch {}: [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, i * len(source_data), len(source_loader) * BATCH_SIZE,
-                100. * i / len(source_loader), loss.data[0]))
+                100. * i / len(source_loader), loss.item()))
 
     total_loss /= len(source_loader)
     acc_train = float(correct) * 100. / (len(source_loader) * BATCH_SIZE)
 
     print('{} set: Average loss: {:.4f}, Accuracy: {}/{} ({:.2f}%)'.format(
-        SOURCE_NAME, total_loss.data[0], correct, len(source_loader.dataset), acc_train))
+        SOURCE_NAME, total_loss.item(), correct, len(source_loader.dataset), acc_train))
 
 
 def test_alexnet(model, target_loader):
@@ -113,7 +113,7 @@ def test_alexnet(model, target_loader):
 
     test_loss /= len(target_loader)
     print('{} set: Average loss: {:.4f}, Accuracy: {}/{} ({:.2f}%)\n'.format(
-        TARGET_NAME, test_loss.data[0], correct, len(target_loader.dataset),
+        TARGET_NAME, test_loss.item(), correct, len(target_loader.dataset),
         100. * correct / len(target_loader.dataset)))
     return correct
 
